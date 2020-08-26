@@ -41,9 +41,11 @@
 			<i class="fas fa-moon"></i> Not currently seeking talent
 		</p>
 		{% endif %}
+
 	</div>
 	<div class="col-sm-6">
 		<img src="{{ venue.image_link }}" alt="Venue Image" />
+
 	</div>
 </div>
 <section>
@@ -73,6 +75,39 @@
 		</div>
 		{% endfor %}
 	</div>
+
+
+		<!--<input type="submit" value="Delete Venue" class="btn btn-primary btn-lg btn-block"
+			   formaction="{{ url_for('delete_venue', venue_id=venue.id) }}">-->
+<!--		<button id="delete_button" class="btn btn-primary btn-lg btn-block"data-id={{ venue.id }}>DELETE</button>-->
+
+	<form>
+    <input type="submit"
+            value="Delete Venue"
+            class="btn btn-primary btn-lg btn-block"
+            formmethod="post"
+            formaction="{{ url_for('delete_venue', venue_id=venue.id) }}">
+	</form>
+
+	<!--<script>
+		const delete_button = document.getElementById('delete_button');
+		delete_button.onclick = function (e) {
+		const venue_id = e.target.dataset['id'];
+		fetch('/venues/' + venue_id, {
+		method: "DELETE"
+		})
+		.then(function () {
+		window.location.href = '/';
+		})
+		.catch(function (e) {
+		console.log('error',e)
+		})}
+	</script>-->
+	<a href="/venues/{{ venue.id }}/edit">
+<button class="btn btn-primary btn-lg" id="venue-delete-btn" data-id="{{ venue.id }}">
+Edit Venue
+</button>
+</a>
 </section>
 
 {% endblock %}

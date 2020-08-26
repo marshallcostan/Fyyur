@@ -71,6 +71,12 @@
 		{% endfor %}
 	</div>
 </section>
-
+<form>
+    <input type="submit"
+            value="Delete Artist"
+            class="btn btn-primary btn-lg btn-block"
+            formmethod="post"
+            formaction="{{ url_for('delete_artist', artist_id=artist.id) }}">
+</form>
 {% endblock %}
 
