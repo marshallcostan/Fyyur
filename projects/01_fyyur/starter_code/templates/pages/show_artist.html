@@ -78,5 +78,10 @@
             formmethod="post"
             formaction="{{ url_for('delete_artist', artist_id=artist.id) }}">
 </form>
+<a href="/artists/{{ artist.id }}/edit">
+<button class="btn btn-primary btn-lg" id="artist-edit-btn" data-id="{{ artist.id }}">
+Edit Venue
+</button>
+</a>
 {% endblock %}
 

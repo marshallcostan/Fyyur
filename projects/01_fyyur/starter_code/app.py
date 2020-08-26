@@ -429,7 +429,39 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
-  users.update().values({"name": "some new name"})
+
+  artist = Artist.query.get(artist_id)
+  error = False
+  try:
+      artist.name = request.form['name']
+      artist.city = request.form['city']
+      artist.state = request.form['state']
+      artist.phone = request.form['phone']
+      artist.genres = request.form.getlist('genres')
+      if 'seeking_venue' in request.form:
+          artist.seeking_venue = True
+      else:
+          artist.seeking_venue = False
+      artist.seeking_description = request.form['seeking_description']
+      artist.image_link = request.form['image_link']
+      artist.facebook_link = request.form['facebook_link']
+      updated_artist = Artist(name=artist.name, city=artist.city, state=artist.state,
+                            phone=artist.phone,
+                            genres=artist.genres, seeking_venue=artist.seeking_venue,
+                            seeking_description=artist.seeking_description,
+                            image_link=artist.image_link, facebook_link=artist.facebook_link)
+      db.session.add(updated_artist)
+      db.session.commit()
+      flash('Artist ' + request.form['name'] + ' was successfully updated')
+  except():
+      db.session.rollback()
+      error = True
+      flash('An error occurred. Artist ' + request.form['name'] + ' could not be updated.')
+      print(sys.exc_info)
+  finally:
+      db.session.close()
+  if error:
+      abort(500)
 
 
 
@@ -501,7 +533,7 @@ def create_artist_submission():
   # # TODO: on unsuccessful db insert, flash an error instead.
   # # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
   # return render_template('pages/home.html')
-  users.update().values({"name": "some new name"})
+  # .update().values({"name": "some new name"})
 
   error = False
   try:
@@ -559,43 +591,7 @@ def shows():
       return render_template('pages/shows.html', shows=data)
 
 
-  # data=[{
-  #   "venue_id": 1,
-  #   "venue_name": "The Musical Hop",
-  #   "artist_id": 4,
-  #   "artist_name": "Guns N Petals",
-  #   "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-  #   "start_time": "2019-05-21T21:30:00.000Z"
-  # }, {
-  #   "venue_id": 3,
-  #   "venue_name": "Park Square Live Music & Coffee",
-  #   "artist_id": 5,
-  #   "artist_name": "Matt Quevedo",
-  #   "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-  #   "start_time": "2019-06-15T23:00:00.000Z"
-  # }, {
-  #   "venue_id": 3,
-  #   "venue_name": "Park Square Live Music & Coffee",
-  #   "artist_id": 6,
-  #   "artist_name": "The Wild Sax Band",
-  #   "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-  #   "start_time": "2035-04-01T20:00:00.000Z"
-  # }, {
-  #   "venue_id": 3,
-  #   "venue_name": "Park Square Live Music & Coffee",
-  #   "artist_id": 6,
-  #   "artist_name": "The Wild Sax Band",
-  #   "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-  #   "start_time": "2035-04-08T20:00:00.000Z"
-  # }, {
-  #   "venue_id": 3,
-  #   "venue_name": "Park Square Live Music & Coffee",
-  #   "artist_id": 6,
-  #   "artist_name": "The Wild Sax Band",
-  #   "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-  #   "start_time": "2035-04-15T20:00:00.000Z"
-  # }]
-  # return render_template('pages/shows.html', shows=data)
+
 
 @app.route('/shows/create')
 def create_shows():
