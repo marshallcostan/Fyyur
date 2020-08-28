@@ -118,13 +118,12 @@ def venues():
             'city': area.city,
             'state': area.state,
             'venues': venue_data
-            })
-    for venue in areas:
-        venue_data.append({
-            'id': venue.id,
-            'name': venue.name,
-            'upcoming_shows_count': len(db.session.query(Show).filter(Show.start_time > datetime.now()).all())
-            })
+                })
+        for venue in areas:
+            venue_data.append({
+                'id': venue.id,
+                'name': venue.name,
+                })
     return render_template('pages/venues.html', areas=data)
 
 
@@ -144,10 +143,11 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
     venue = db.session.query(Venue).filter(Venue.id == venue_id)
-    past_shows_result = db.session.query(Show).filter(Show.venue_id == venue_id).filter(
+    past_shows_result = db.session.query(Show).join(Artist).join(Venue). \
+        filter(Show.venue_id == venue_id).filter(
         Show.start_time < datetime.now()).all()
-    upcoming_shows_result = db.session.query(Show).filter(Show.venue_id == venue_id).filter(
-        Show.start_time > datetime.now()).all()
+    upcoming_shows_result = db.session.query(Show).join(Artist).join(Venue).filter \
+        (Show.venue_id == venue_id).filter(Show.start_time > datetime.now()).all()
     for v in venue:
         past_shows = []
         upcoming_shows = []
@@ -275,9 +275,11 @@ def search_artists():
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
     artist = db.session.query(Artist).filter(Artist.id == artist_id)
-    past_shows_result = db.session.query(Show).filter(Show.artist_id == artist_id).filter(
+    past_shows_result = db.session.query(Show).join(Artist).join(Venue).\
+        filter(Show.artist_id == artist_id).filter(
       Show.start_time < datetime.now()).all()
-    upcoming_shows_result = db.session.query(Show).filter(Show.artist_id == artist_id).filter(Show.start_time > datetime.now()).all()
+    upcoming_shows_result = db.session.query(Show).join(Artist).join(Venue).filter\
+        (Show.artist_id == artist_id).filter(Show.start_time > datetime.now()).all()
     for a in artist:
         past_shows = []
         upcoming_shows = []
